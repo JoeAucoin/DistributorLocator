@@ -1,0 +1,102 @@
+﻿
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_Type_GetList]    Script Date: 01/30/2017 06:11:45 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_Distributor_Type_GetList]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GIBS_Distributor_Type_GetList]
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_Update]    Script Date: 01/30/2017 06:11:45 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_Distributor_Update]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GIBS_Distributor_Update]
+GO
+
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_Type_GetList]    Script Date: 01/30/2017 06:11:45 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE PROCEDURE [dbo].[GIBS_Distributor_Type_GetList]
+
+
+as
+
+BEGIN 
+
+
+SELECT [id] AS ItemID
+      ,[Description] AS DistributorType
+
+     
+  FROM [dbo].[GIBS_DistributorType]
+
+
+END
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_Update]    Script Date: 01/30/2017 06:11:45 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+CREATE PROCEDURE [dbo].[GIBS_Distributor_Update]
+
+	@ItemID int,
+	@Distributor varchar(75),
+	@Contact varchar(50),
+	@Address varchar(50),
+	@City varchar(50),
+	@State varchar(10),
+	@ZipCode varchar(10),
+	@Phone varchar(50),
+	@Fax varchar(50),
+	@Email varchar(50),
+	@WebSite varchar(100),
+	@Email2 varchar(50),
+	@isDistributor varchar(1),
+	@DistributorType int,
+	@isActive varchar(1),
+	@Comments varchar(max)
+
+as
+
+BEGIN 
+
+ UPDATE [dbo].[GIBS_DistributorList]
+   SET [Distributor] = @Distributor
+      ,[Contact] = @Contact
+      ,[Address] = @Address
+      ,[City] = @City
+      ,[State] = @State 
+      ,[Zip] = @ZipCode
+      ,[Phone] = @Phone
+      ,[Fax] = @Fax
+      ,[email] = @Email
+      ,[website] = @WebSite
+      ,[email2] = @Email2
+      ,[isDistributor] = @isDistributor
+      ,[DistributorType] = @DistributorType
+      ,[isActive] = @isActive
+      ,[Comments] = @Comments
+ 
+WHERE ItemID = @ItemID
+
+
+
+
+END
+
+GO
+
+

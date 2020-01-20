@@ -1,0 +1,341 @@
+﻿/************************************************************/
+/*****              SqlDataProvider                     *****/
+/*****                                                  *****/
+/*****                                                  *****/
+/***** Note: To manually execute this script you must   *****/
+/*****       perform a search and replace operation     *****/
+/*****       for {databaseOwner} and {objectQualifier}  *****/
+/*****                                                  *****/
+/************************************************************/
+
+
+/****** Object:  Table [dbo].[GIBS_DistributorList]    Script Date: 10/12/2014 10:13:05 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[GIBS_DistributorList](
+	[ItemID] [int] IDENTITY(1,1) NOT NULL,
+	[Distributor] [varchar](75) NULL,
+	[Contact] [varchar](50) NULL,
+	[Address] [varchar](50) NULL,
+	[City] [varchar](50) NULL,
+	[State] [varchar](10) NULL,
+	[Zip] [varchar](10) NULL,
+	[Phone] [varchar](50) NULL,
+	[Fax] [varchar](50) NULL,
+	[email] [varchar](50) NULL,
+	[website] [varchar](100) NULL,
+	[email2] [varchar](50) NULL,
+	[isDistributor] [varchar](1) NULL,
+	[DistributorType] [int] NULL,
+	[isActive] [varchar](1) NULL,
+	[Comments] [text] NULL
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+/****** Object:  Table [dbo].[GIBS_DistributorType]    Script Date: 10/12/2014 10:13:05 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[GIBS_DistributorType](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[Description] [varchar](50) NULL,
+	[isActive] [char](1) NULL,
+	[InsertDate] [datetime] NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+
+
+
+/****** Object:  UserDefinedFunction [dbo].[GIBS_ZipCodeCSVToTable]    Script Date: 10/12/2014 10:14:24 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_ZipCodeCSVToTable]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[GIBS_ZipCodeCSVToTable]
+GO
+
+
+
+/****** Object:  UserDefinedFunction [dbo].[GIBS_ZipCodeCSVToTable]    Script Date: 10/12/2014 10:14:24 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE FUNCTION [dbo].[GIBS_ZipCodeCSVToTable] (@InStr VARCHAR(MAX))
+RETURNS @TempTab TABLE
+   (ZipCode nvarchar(5))
+AS
+BEGIN
+    ;-- Ensure input ends with comma
+	SET @InStr = REPLACE(@InStr + ',', ',,', ',')
+	DECLARE @SP INT
+DECLARE @VALUE VARCHAR(1000)
+WHILE PATINDEX('%,%', @INSTR ) <> 0 
+BEGIN
+   SELECT  @SP = PATINDEX('%,%',@INSTR)
+   SELECT  @VALUE = LEFT(@INSTR , @SP - 1)
+   SELECT  @INSTR = STUFF(@INSTR, 1, @SP, '')
+   INSERT INTO @TempTab(ZipCode) VALUES (@VALUE)
+END
+	RETURN
+END
+GO
+
+
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_GetDistributor]    Script Date: 10/12/2014 10:15:38 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_Distributor_GetDistributor]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GIBS_Distributor_GetDistributor]
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_GetLatLongByZipCode]    Script Date: 10/12/2014 10:15:38 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_Distributor_GetLatLongByZipCode]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GIBS_Distributor_GetLatLongByZipCode]
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_GetZipCodesByLatLong]    Script Date: 10/12/2014 10:15:38 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_Distributor_GetZipCodesByLatLong]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GIBS_Distributor_GetZipCodesByLatLong]
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_Search_State]    Script Date: 10/12/2014 10:15:38 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_Distributor_Search_State]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GIBS_Distributor_Search_State]
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_Search_Zips]    Script Date: 10/12/2014 10:15:38 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_Distributor_Search_Zips]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GIBS_Distributor_Search_Zips]
+GO
+
+
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_GetDistributor]    Script Date: 10/12/2014 10:15:38 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE PROCEDURE [dbo].[GIBS_Distributor_GetDistributor]
+
+	@ItemID int
+
+as
+
+BEGIN 
+
+ SELECT     
+ --coalesce(Distributor.Zip,list.ZipCode) as MyZip , 
+ ItemID, Distributor, Contact,
+ [Address] + '<br />' + City + ', ' + [State] + ' ' + Zip AS [FullAddress],
+  [Address], City, [State], Phone, 
+  Fax, email, website, email2, [zip] as ZipCode,
+  isDistributor,  Distributor.isActive, 
+  Comments,
+  
+	dt.Description as DistributorType
+
+
+from  dbo.GIBS_DistributorList Distributor  
+
+
+join GIBS_DistributorType dt on Distributor.DistributorType = dt.id
+
+WHERE ItemID = @ItemID
+
+
+
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_GetLatLongByZipCode]    Script Date: 10/12/2014 10:15:38 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+ CREATE PROCEDURE [dbo].[GIBS_Distributor_GetLatLongByZipCode]
+
+	@ZipCode varchar(5)
+
+as
+BEGIN 
+
+	SELECT ZipCode, Latitude, Longitude, City, [State]
+	FROM Zip  
+	WHERE ZipCode = @ZipCode
+
+
+END
+
+
+
+
+
+
+
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_GetZipCodesByLatLong]    Script Date: 10/12/2014 10:15:38 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+
+ CREATE PROCEDURE [dbo].[GIBS_Distributor_GetZipCodesByLatLong]
+
+	@LatitudeLow real,
+	@LatitudeHigh real,
+	@LongitudeLow real,
+	@LongitudeHigh real
+
+as
+BEGIN 
+
+	SELECT distinct 
+	Zipcode FROM Zip 
+	WHERE Latitude >= @LatitudeLow 
+	AND Latitude <= @LatitudeHigh 
+	AND Longitude >= @LongitudeLow 
+	AND Longitude <= @LongitudeHigh
+
+
+END
+
+
+
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_Search_State]    Script Date: 10/12/2014 10:15:38 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE PROCEDURE [dbo].[GIBS_Distributor_Search_State]
+
+	@State VARCHAR(2)
+
+as
+
+BEGIN 
+
+ SELECT     
+ --coalesce(Distributor.Zip,list.ZipCode) as MyZip , 
+ ItemID, Distributor, Contact,
+ [Address] + '<br />' + City + ', ' + [State] + ' ' + Zip AS [FullAddress],
+  [Address], City, [State], Phone, 
+  Fax, email, website, email2, [zip] as ZipCode,
+  isDistributor,  Distributor.isActive, 
+  Comments,
+  
+	dt.Description as DistributorType
+
+
+from  dbo.GIBS_DistributorList Distributor  
+
+
+join GIBS_DistributorType dt on Distributor.DistributorType = dt.id
+
+WHERE State = @State
+
+Order by City 
+
+
+END
+GO
+
+/****** Object:  StoredProcedure [dbo].[GIBS_Distributor_Search_Zips]    Script Date: 10/12/2014 10:15:38 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE PROCEDURE [dbo].[GIBS_Distributor_Search_Zips]
+
+	@ZipList VARCHAR(MAX)
+
+as
+
+BEGIN 
+
+ SELECT     
+ --coalesce(Distributor.Zip,list.ZipCode) as MyZip , 
+ ItemID, Distributor, Contact,
+  [Address] + '<br />' + City + ', ' + [State] + ' ' + Zip AS [FullAddress], 
+  [Address],
+  
+  
+  City, State, Phone, Fax, email, website, [Zip] AS ZipCode,
+  email2, isDistributor,  Distributor.isActive, Comments,
+  
+	dt.Description as DistributorType
+
+
+from dbo.GIBS_ZipCodeCSVToTable(@ZipList) list 
+inner join dbo.GIBS_DistributorList Distributor  
+
+on Distributor.Zip = list.ZipCode
+
+join GIBS_DistributorType dt on Distributor.DistributorType = dt.id
+
+
+Order by City Asc
+
+
+END
+GO
+
+
+
+
+/************************************************************/
+/*****              SqlDataProvider                     *****/
+/************************************************************/

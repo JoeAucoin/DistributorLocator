@@ -1,0 +1,105 @@
+﻿
+
+
+.StateLinks, .StateLinks a
+{
+font-size:12px;
+text-align:center;
+}
+
+.GridPager a, .GridPager span
+
+    {
+
+        display: block;
+
+        height: 20px;
+
+        width: 20px;
+
+        font-weight: bold;
+
+        text-align: center;
+
+        text-decoration: none;
+        margin-right:6px;
+
+    }
+
+    .GridPager a
+
+    {
+
+        background-color: #f5f5f5;
+
+        color: #969696;
+
+        border: 1px solid #969696;
+
+    }
+
+    .GridPager span
+
+    {
+
+        background-color: #A1DCF2;
+
+        color: #000;
+
+        border: 1px solid #3AC0F2;
+
+    }
+    
+    .GridPager1
+    {
+    	margin-left:auto; 
+    margin-right:auto;
+
+    	}
+    
+    .GridPager1 a, .GridPager1 span
+
+    {
+
+       
+        height: 20px;
+
+        padding-left: 4px;
+		padding-right: 4px;
+        font-weight: bold;
+
+        text-align: center;
+
+        text-decoration: none;
+        margin-right:3px;
+
+    }
+
+    .GridPager1 a
+
+    {
+
+        background-color: #f5f5f5;
+
+        color: #969696;
+
+        border: 1px solid #969696;
+
+    }
+
+    .GridPager1 span
+
+    {
+
+        background-color: #A1DCF2;
+
+        color: #000;
+
+        border: 1px solid #3AC0F2;
+
+    }
+    
+    
+    v\:* {
+    behavior:url(#default#VML);
+}

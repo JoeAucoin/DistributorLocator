@@ -1,0 +1,115 @@
+﻿<dotnetnuke type="Package" version="5.0">
+  <packages><package name="GIBS.DistributorLocator" type="Module" version="1.0.10">
+  <friendlyName>GIBS DistributorLocator</friendlyName>
+  <description>GIBS Distributor Locator</description>
+  <iconFile />
+  <owner>
+    <name>Joseph Aucoin</name>
+    <organization>Global Internet Business Solutions</organization>
+    <url>www.gibs.com</url>
+    <email>support@gibs.net</email>
+  </owner>
+  <license></license>
+  <releaseNotes />
+  <components>
+    <component type="Script">
+      <scripts>
+        <basePath>DesktopModules\GIBS\DistributorLocator</basePath>
+        <script type="Install">
+          <path>SqlDataProvider</path>
+          <name>01.00.00.SqlDataProvider</name>
+          <version>01.00.00</version>
+        </script>
+        <script type="Install">
+          <path>SqlDataProvider</path>
+          <name>01.00.06.SqlDataProvider</name>
+          <version>01.00.06</version>
+        </script>
+        <script type="UnInstall">
+          <name>Uninstall.SqlDataProvider</name>
+          <version>1.0.10</version>
+        </script>
+      </scripts>
+    </component>
+    <component type="ResourceFile">
+      <resourceFiles>
+        <basePath>DesktopModules/GIBS/DistributorLocator</basePath>
+        <resourceFile>
+          <name>Resources.zip</name>
+        </resourceFile>
+      </resourceFiles>
+    </component>
+    
+    <component type="Module">
+      <desktopModule>
+        <moduleName>GIBS.DistributorLocator</moduleName>
+        <foldername>GIBS/DistributorLocator</foldername>
+        <businessControllerClass />
+        <supportedFeatures />
+        <moduleDefinitions>
+          <moduleDefinition>
+            <friendlyName>GIBS DistributorLocator</friendlyName>
+            <definitionName>GIBS DistributorLocator</definitionName>
+            <defaultCacheTime>0</defaultCacheTime>
+            <moduleControls>
+              <moduleControl>
+                <controlKey />
+                <controlSrc>DesktopModules/GIBS/DistributorLocator/ViewDistributorLocator.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle />
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+                <viewOrder>0</viewOrder>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Edit</controlKey>
+                <controlSrc>desktopmodules/gibs/distributorlocator/Edit.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Edit Distributor</controlTitle>
+                <controlType>Edit</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+                <viewOrder>1</viewOrder>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>List</controlKey>
+                <controlSrc>desktopmodules/gibs/distributorlocator/List.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>List</controlTitle>
+                <controlType>View</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+                <viewOrder>0</viewOrder>
+              </moduleControl>
+              <moduleControl>
+                <controlKey>Settings</controlKey>
+                <controlSrc>desktopmodules/gibs/distributorlocator/Settings.ascx</controlSrc>
+                <supportsPartialRendering>False</supportsPartialRendering>
+                <controlTitle>Settings</controlTitle>
+                <controlType>Edit</controlType>
+                <iconFile />
+                <helpUrl />
+                <supportsPopUps>False</supportsPopUps>
+                <viewOrder>1</viewOrder>
+              </moduleControl>
+            </moduleControls>
+          </moduleDefinition>
+        </moduleDefinitions>
+      </desktopModule>
+    </component>
+    <component type="Assembly">
+      <assemblies>
+        <basePath>bin</basePath>
+        <assembly>
+          <name>GIBS.Modules.DistributorLocator.dll</name>
+        </assembly>
+      </assemblies>
+    </component>
+
+  </components>
+</package></packages>
+</dotnetnuke>
