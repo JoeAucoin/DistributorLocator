@@ -1,0 +1,36 @@
+﻿
+/****** Object:  UserDefinedFunction [dbo].[GIBS_ZipCodeCSVToTable]    Script Date: 1/20/2020 2:26:22 PM ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_ZipCodeCSVToTable]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[GIBS_ZipCodeCSVToTable]
+GO
+
+/****** Object:  UserDefinedFunction [dbo].[GIBS_ZipCodeCSVToTable]    Script Date: 1/20/2020 2:26:22 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GIBS_ZipCodeCSVToTable]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+BEGIN
+execute dbo.sp_executesql @statement = N'CREATE FUNCTION [dbo].[GIBS_ZipCodeCSVToTable] (@InStr VARCHAR(MAX))
+RETURNS @TempTab TABLE
+   (ZipCode nvarchar(5))
+AS
+BEGIN
+    ;-- Ensure input ends with comma
+	SET @InStr = REPLACE(@InStr + '','', '',,'', '','')
+	DECLARE @SP INT
+DECLARE @VALUE VARCHAR(1000)
+WHILE PATINDEX(''%,%'', @INSTR ) <> 0 
+BEGIN
+   SELECT  @SP = PATINDEX(''%,%'',@INSTR)
+   SELECT  @VALUE = LEFT(@INSTR , @SP - 1)
+   SELECT  @INSTR = STUFF(@INSTR, 1, @SP, '''')
+   INSERT INTO @TempTab(ZipCode) VALUES (@VALUE)
+END
+	RETURN
+END' 
+END
+
+GO
