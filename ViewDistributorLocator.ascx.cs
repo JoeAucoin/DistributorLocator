@@ -18,16 +18,13 @@ namespace GIBS.Modules.DistributorLocator
     public partial class ViewDistributorLocator : PortalModuleBase, IActionable
     {
         public string mControlToLoad = "";
+       
         
         protected void Page_Load(object sender, EventArgs e)
         {
             try
             {
-                if (!IsPostBack)
-                {
 
-                   
-                }
             }
             catch (Exception ex)
             {
@@ -43,7 +40,7 @@ namespace GIBS.Modules.DistributorLocator
             {
 
 
-                if (Request.QueryString["pg"] != null)
+                    if (Request.QueryString["pg"] != null)
                 {
 
                     switch (Request.QueryString["pg"].ToString().ToLower())

@@ -25,9 +25,21 @@ namespace GIBS.Modules.DistributorLocator
 {
     public partial class Search : PortalModuleBase
     {
+        public string _ErrorMessage = "";
         protected void Page_Load(object sender, EventArgs e)
         {
-           
+
+            // ErrorMessage
+
+            if (Request.QueryString["ErrorMessage"] != null)
+            {
+                lblFormMessage.Visible = true;
+                _ErrorMessage = Request.QueryString["ErrorMessage"].ToString();
+                lblFormMessage.Text = " <span class=\"dnnFormMessage dnnFormValidationSummary\"><b>" + _ErrorMessage.ToString()+ "</b></span>";
+            }
+
+
+
             if (!IsPostBack)
             {
                 GetStates();
@@ -36,6 +48,8 @@ namespace GIBS.Modules.DistributorLocator
             }
 
         }
+
+        
 
         public void GetStates()
         {

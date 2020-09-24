@@ -44,49 +44,58 @@ namespace GIBS.Modules.DistributorLocator
 
                 DistributorLocatorController controller = new DistributorLocatorController();
                 DistributorLocatorInfo item = controller.Distributor_GetDistributor(Int32.Parse(Request.QueryString["Distributor"].ToString()));
-
-                lblDistributor.Text = item.Distributor.ToString();
-                lblAddress.Text = item.FullAddress.ToString();
-                lblPhone.Text = "Phone: " + item.Phone.ToString();
-                lblFax.Text = "Fax: " + item.Fax.ToString();
-                if (item.Contact.ToString().Length > 3)
+                if (item != null)
                 {
-                    lblContact.Text = "Contact: " + item.Contact.ToString();
-                }
+                    lblDistributor.Text = item.Distributor.ToString();
+                    lblAddress.Text = item.FullAddress.ToString();
+                    lblPhone.Text = "Phone: " + item.Phone.ToString();
+                    lblFax.Text = "Fax: " + item.Fax.ToString();
+                    if (item.Contact.ToString().Length > 3)
+                    {
+                        lblContact.Text = "Contact: " + item.Contact.ToString();
+                    }
 
-                //WebSite Link
-                
-                if (item.Website.ToString().Length > 6)
-                {
-                    hyperlinkWebSite.NavigateUrl = "http://" + item.Website.ToString();
-                    hyperlinkWebSite.Target = "_blank";
+                    //WebSite Link
+
+                    if (item.Website.ToString().Length > 6)
+                    {
+                        hyperlinkWebSite.NavigateUrl = "http://" + item.Website.ToString();
+                        hyperlinkWebSite.Target = "_blank";
+                    }
+                    else
+                    {
+                        hyperlinkWebSite.Visible = false;
+                    }
+
+                    // EMAIL LINK
+                    if (item.Email.ToString().Length > 6)
+                    {
+                        HyperLinkEmail.NavigateUrl = "mailto:" + item.Email.ToString() + "?subject=Product%20Inquiry";
+                    }
+                    else
+                    {
+                        HyperLinkEmail.Visible = false;
+                    }
+
+                    ModuleConfiguration.ModuleTitle = item.Distributor.ToString() + " in " + item.City.ToString() + ", " + item.State.ToString();
+                    DotNetNuke.Framework.CDefault GIBSpage = (DotNetNuke.Framework.CDefault)this.Page;
+                    GIBSpage.Title = _pageTitle.ToString().Replace("[Distributor]", item.Distributor.ToString()).Replace("[City]", item.City.ToString()).Replace("[State]", item.State.ToString()).ToString();
+
+                    //    GIBSpage.Title = "Lab-metal Distributor " + item.Distributor.ToString() + " in " + item.City.ToString() + ", " + item.State.ToString();
+
+
+                    string _Address = item.Address.ToString() + ", " + item.City.ToString() + ", " + item.State.ToString() + " " + item.ZipCode.ToString();
+
+                    _AddressToMap = _Address.ToString().Replace(" ", "+").Replace("&", "%26").ToString();
+                    //BuildGoogleMap(_Address.ToString());
+
                 }
                 else
                 {
-                    hyperlinkWebSite.Visible = false;
+                    Response.Redirect(Globals.NavigateURL(this.TabId, "", "ErrorMessage=Distributor+Removed"),true);
+                 //   _AddressToMap = "10001";
+                 //   lblDistributor.Text = "Distributor Removed";
                 }
-
-                // EMAIL LINK
-                if (item.Email.ToString().Length > 6)
-                {
-                    HyperLinkEmail.NavigateUrl = "mailto:" + item.Email.ToString() + "?subject=Product%20Inquiry";
-                }
-                else
-                {
-                    HyperLinkEmail.Visible = false;
-                }
-
-                ModuleConfiguration.ModuleTitle = item.Distributor.ToString() + " in " + item.City.ToString() + ", " + item.State.ToString();
-                DotNetNuke.Framework.CDefault GIBSpage = (DotNetNuke.Framework.CDefault)this.Page;
-                GIBSpage.Title = _pageTitle.ToString().Replace("[Distributor]", item.Distributor.ToString()).Replace("[City]", item.City.ToString()).Replace("[State]", item.State.ToString()).ToString();
-                
-           //    GIBSpage.Title = "Lab-metal Distributor " + item.Distributor.ToString() + " in " + item.City.ToString() + ", " + item.State.ToString();
-
-
-                string _Address = item.Address.ToString() + ", " + item.City.ToString() + ", " + item.State.ToString() + " " + item.ZipCode.ToString();
-
-                _AddressToMap = _Address.ToString().Replace(" ", "+").Replace("&", "%26").ToString();
-                //BuildGoogleMap(_Address.ToString());
 
             }
             catch (Exception ex)
